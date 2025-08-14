@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PizzaTacos - Commandez en ligne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        nav {
+            background-color: #c0392b;
+            padding: 15px 0;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f1c40f;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .categories {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            background-color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .category-btn.active {
+            background-color: #f1c40f;
+            color: #c0392b;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f1c40f;
+            color: #c0392b;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .product-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-card:hover .product-img img {
+            transform: scale(1.1);
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #c0392b;
+        }
+        
+        .product-desc {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            min-height: 60px;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        
+        .add-to-cart {
+            display: block;
+            text-align: center;
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #c0392b;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .cart-sidebar.active {
+            right: 0;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .cart-items {
+            margin-bottom: 20px;
+        }
+        
+        .cart-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .cart-item-remove {
+            color: #666;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .cart-total {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #f1c40f;
+            color: #c0392b;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #f39c12;
+        }
+        
+        .cart-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #e74c3c;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 999;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #f1c40f;
+            color: #c0392b;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li {
+                margin: 5px 0;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-sidebar {
+                width: 90%;
+                right: -90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">PizzaTacos</div>
+        <p>Commandez vos pizzas, tacos et boissons préférés</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Menu</a></li>
+            <li><a href="#">Promotions</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="categories">
+            <button class="category-btn active" data-category="pizza">Pizzas</button>
+            <button class="category-btn" data-category="tacos">Tacos</button>
+            <button class="category-btn" data-category="boissons">Boissons</button>
+        </div>
+        
+        <div class="products">
+            <!-- Pizza 1 -->
+            <div class="product-card" data-category="pizza">
+                <div class="product-badge">Populaire</div>
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Pizza Margherita">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Pizza Margherita</h3>
+                    <p class="product-desc">Sauce tomate, mozzarella, basilic frais</p>
+                    <div class="product-price">65 DH</div>
+                    <button class="add-to-cart" data-name="Pizza Margherita" data-price="65">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Pizza 2 -->
+            <div class="product-card" data-category="pizza">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Pizza Pepperoni">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Pizza Pepperoni</h3>
+                    <p class="product-desc">Sauce tomate, mozzarella, pepperoni</p>
+                    <div class="product-price">75 DH</div>
+                    <button class="add-to-cart" data-name="Pizza Pepperoni" data-price="75">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Pizza 3 -->
+            <div class="product-card" data-category="pizza">
+                <div class="product-badge">Nouveau</div>
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Pizza 4 Fromages">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Pizza 4 Fromages</h3>
+                    <p class="product-desc">Mozzarella, gorgonzola, parmesan, chèvre</p>
+                    <div class="product-price">80 DH</div>
+                    <button class="add-to-cart" data-name="Pizza 4 Fromages" data-price="80">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Tacos 1 -->
+            <div class="product-card" data-category="tacos">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Tacos Poulet">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Tacos Poulet</h3>
+                    <p class="product-desc">Poulet grillé, frites, sauce fromagère</p>
+                    <div class="product-price">45 DH</div>
+                    <button class="add-to-cart" data-name="Tacos Poulet" data-price="45">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Tacos 2 -->
+            <div class="product-card" data-category="tacos">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1613514785940-daed07799d9b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Tacos Viande">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Tacos Viande</h3>
+                    <p class="product-desc">Viande hachée, frites, sauce algérienne</p>
+                    <div class="product-price">50 DH</div>
+                    <button class="add-to-cart" data-name="Tacos Viande" data-price="50">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Tacos 3 -->
+            <div class="product-card" data-category="tacos">
+                <div class="product-badge">Best-seller</div>
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1626700051175-6818013e1d4f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Tacos Mixte">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Tacos Mixte</h3>
+                    <p class="product-desc">Poulet et viande, frites, sauce samouraï</p>
+                    <div class="product-price">55 DH</div>
+                    <button class="add-to-cart" data-name="Tacos Mixte" data-price="55">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Boisson 1 -->
+            <div class="product-card" data-category="boissons">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1554866585-cd94860890b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Coca-Cola">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Coca-Cola</h3>
+                    <p class="product-desc">Canette 33cl</p>
+                    <div class="product-price">8 DH</div>
+                    <button class="add-to-cart" data-name="Coca-Cola" data-price="8">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Boisson 2 -->
+            <div class="product-card" data-category="boissons">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Fanta">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Fanta Orange</h3>
+                    <p class="product-desc">Canette 33cl</p>
+                    <div class="product-price">8 DH</div>
+                    <button class="add-to-cart" data-name="Fanta Orange" data-price="8">Ajouter au panier</button>
+                </div>
+            </div>
+            
+            <!-- Boisson 3 -->
+            <div class="product-card" data-category="boissons">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Eau Minérale">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Eau Minérale</h3>
+                    <p class="product-desc">Bouteille 50cl</p>
+                    <div class="product-price">5 DH</div>
+                    <button class="add-to-cart" data-name="Eau Minérale" data-price="5">Ajouter au panier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Panier -->
+    <div class="overlay"></div>
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Votre Panier</h2>
+            <button class="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- Les articles du panier seront ajoutés ici dynamiquement -->
+        </div>
+        <div class="cart-total">
+            Total: <span class="total-amount">0</span> DH
+        </div>
+        <form id="checkout-form">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nom complet</label>
+                <input type="text" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Numéro de téléphone</label>
+                <input type="tel" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Adresse de livraison</label>
+                <textarea required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 80px;"></textarea>
+            </div>
+            <button type="submit" class="checkout-btn">Passer la commande</button>
+        </form>
+    </div>
+    
+    <div class="cart-toggle">
+        <span class="cart-count">0</span>
+        🛒
+    </div>
+    
+    <script>
+        // Panier
+        let cart = [];
+        const cartItemsEl = document.querySelector('.cart-items');
+        const cartTotalEl = document.querySelector('.total-amount');
+        const cartCountEl = document.querySelector('.cart-count');
+        const cartSidebar = document.querySelector('.cart-sidebar');
+        const overlay = document.querySelector('.overlay');
+        const cartToggle = document.querySelector('.cart-toggle');
+        const closeCartBtn = document.querySelector('.close-cart');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const productCards = document.querySelectorAll('.product-card');
+        
+        // Ouvrir/fermer le panier
+        cartToggle.addEventListener('click', () => {
+            cartSidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+        
+        closeCartBtn.addEventListener('click', () => {
+            cartSidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        overlay.addEventListener('click', () => {
+            cartSidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        // Ajouter au panier
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const name = btn.getAttribute('data-name');
+                const price = parseFloat(btn.getAttribute('data-price'));
+                
+                // Vérifier si l'article est déjà dans le panier
+                const existingItem = cart.find(item => item.name === name);
+                
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({
+                        name,
+                        price,
+                        quantity: 1
+                    });
+                }
+                
+                updateCart();
+                cartSidebar.classList.add('active');
+                overlay.classList.add('active');
+            });
+        });
+        
+        // Mettre à jour le panier
+        function updateCart() {
+            cartItemsEl.innerHTML = '';
+            let total = 0;
+            let count = 0;
+            
+            cart.forEach((item, index) => {
+                total += item.price * item.quantity;
+                count += item.quantity;
+                
+                const cartItemEl = document.createElement('div');
+                cartItemEl.classList.add('cart-item');
+                cartItemEl.innerHTML = `
+                    <div class="cart-item-img">
+                        <img src="${document.querySelector(`[data-name="${item.name}"]`).closest('.product-card').querySelector('img').src}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div>
+                            <span class="cart-item-price">${item.price * item.quantity} DH</span>
+                            <span class="cart-item-remove" data-index="${index}">❌</span>
+                        </div>
+                        <div style="display: flex; margin-top: 5px;">
+                            <button class="quantity-btn" data-index="${index}" data-action="decrease">-</button>
+                            <span style="margin: 0 10px;">${item.quantity}</span>
+                            <button class="quantity-btn" data-index="${index}" data-action="increase">+</button>
+                        </div>
+                    </div>
+                `;
+                
+                cartItemsEl.appendChild(cartItemEl);
+            });
+            
+            cartTotalEl.textContent = total;
+            cartCountEl.textContent = count;
+            
+            // Gérer les boutons de quantité
+            document.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = btn.getAttribute('data-index');
+                    const action = btn.getAttribute('data-action');
+                    
+                    if (action === 'increase') {
+                        cart[index].quantity++;
+                    } else {
+                        if (cart[index].quantity > 1) {
+                            cart[index].quantity--;
+                        } else {
+                            cart.splice(index, 1);
+                        }
+                    }
+                    
+                    updateCart();
+                });
+            });
+            
+            // Gérer la suppression d'articles
+            document.querySelectorAll('.cart-item-remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = btn.getAttribute('data-index');
+                    cart.splice(index, 1);
+                    updateCart();
+                });
+            });
+        }
+        
+        // Filtrer les produits par catégorie
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+                
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                productCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Envoyer la commande via WhatsApp
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = e.target.querySelector('input[type="text"]').value;
+            const phone = e.target.querySelector('input[type="tel"]').value;
+            const address = e.target.querySelector('textarea').value;
+            
+            let message = `Nouvelle commande PizzaTacos%0A%0A`;
+            message += `*Nom:* ${name}%0A`;
+            message += `*Téléphone:* ${phone}%0A`;
+            message += `*Adresse:* ${address}%0A%0A`;
+            message += `*Commande:*%0A`;
+            
+            cart.forEach(item => {
+                message += `- ${item.name} x${item.quantity}: ${item.price * item.quantity} DH%0A`;
+            });
+            
+            message += `%0A*Total:* ${cartTotalEl.textContent} DH`;
+            
+            const whatsappUrl = `https://wa.me/212760838921?text=${message}`;
+            
+            window.open(whatsappUrl, '_blank');
+            
+            // Réinitialiser le panier
+            cart = [];
+            updateCart();
+            cartSidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            e.target.reset();
+            
+            alert('Votre commande a été envoyée! Nous vous contacterons sous peu.');
+        });
+    </script>
+</body>
+</html>
